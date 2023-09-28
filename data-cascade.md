@@ -56,7 +56,9 @@ layout: my-layout.njk
 </ul>
 ```
 
-Note, the `tags` have been concatenated, the `template` has been updated to the last in the chain, but the `title` has remains the same as the template; because template front matter has a higher priority than layout front matter. The merging of the data _uses data deep merge_, which is similar to `lodash.mergewith`. Without data deep merge the `tags` would not have been merged, and the `tags` in `my-template` would have prevailed. It is possible to turn data deep merge off, see [here](https://www.11ty.dev/docs/data-deep-merge/) for more.
+## Merging data
+
+The `tags` in the example above have been concatenated, the `template` has been updated to the last in the chain, but the `title` has remains the same as the template; because template front matter has a higher priority than layout front matter. The merging of the data _uses data deep merge_, which is similar to `lodash.mergewith`. Without data deep merge the `tags` would not have been merged, and the `tags` in `my-template` would have prevailed. It is possible to turn data deep merge off, see [here](https://www.11ty.dev/docs/data-deep-merge/) for more.
 
 ## Template and directory data
 
