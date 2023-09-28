@@ -26,15 +26,29 @@ By default the output files are built to `/_site`.
 
 The default config file, `defaultConfig.js`, is on [GitHub](https://github.com/11ty/eleventy/blob/master/src/defaultConfig.js).
 
-For the document action see [here](https://www.11ty.dev/docs/config/).
+For the documentation see [here](https://www.11ty.dev/docs/config/).
 
 Many of these options can be applied at the command line, as well as in the config file.
 
-By default 11ty looks for the following files, the first one found is used:
+By default 11ty looks for the following config files, the first one found is used:
 
 - `.eleventy.js`
 - `eleventy.config.js`
 - `eleventy.config.cjs`
+
+The options are returned as an object by the config file:
+
+```js
+module.exports = function(eleventyConfig) {
+  // Return your Object options:
+  return {
+    dir: {
+      input: "views",
+      output: "dist"
+    }
+  }
+};
+```
 
 The options include:
 
