@@ -50,7 +50,7 @@ module.exports = function(eleventyConfig) {
 };
 ```
 
-The options include:
+### The options
 
 **[`dir.input`](https://www.11ty.dev/docs/config/#input-directory)** changes the top level input directory, file, or glob. Note, if an input folder is set, the default it to have `_includes` and `_data` contained within it.
 
