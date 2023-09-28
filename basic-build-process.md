@@ -91,6 +91,15 @@ permalink: "sub-dir/{{ title | slugify }}/index.html"
 ---
 ```
 
+and:
+
+```yaml
+---
+title: This is a New Path
+permalink: permalink: "/blog/{% if title %}{{ title | slugify }}{% else %}{{path.fileSlug}}{% endif %}/"
+---
+```
+
 Writes to `_site/sub-dir/this-is-a-new-path/index.html`.
 
 Dates can also be added:
