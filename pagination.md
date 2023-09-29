@@ -559,7 +559,7 @@ If you use more than one of these data set modification features, here’s the o
 - `reverse: true`
 - `filter entries`
 
-### Use `before` paginate data 11ty doesn't want to paginate (paginate JS maps)
+### Use `pagination.before` for data 11ty doesn't want to paginate (paginate JS maps)
 
 See [here](https://github.com/11ty/eleventy/issues/2365).
 
