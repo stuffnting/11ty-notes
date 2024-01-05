@@ -101,6 +101,17 @@ For example, if all block posts within a directory are be added to the same coll
   "permalink": "animals/{{ title | slugify }}/"
 }
 ```
+Or,
+
+**_`/posts/posts.11tydata.js`_**
+
+```js
+module.exports = {
+  layout: "layouts/post.njk",
+  tags: "posts",
+  permalink: "animals/{{ title | slugify }}/"
+}
+```
 
 Note, the `.11tydata.` suffix, and the base name of the folder where 11ty looks for template and directory data files can be changed in the config file. See [here](https://www.11ty.dev/docs/data-template-dir/#additional-customizations).
 
