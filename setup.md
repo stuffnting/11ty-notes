@@ -112,7 +112,16 @@ There several options can can be used when building eleventy, including:
 
 **`--input`** and **`--output`** use the same folder for input and output—use with care. See [here](https://www.11ty.dev/docs/usage/#using-the-same-input-and-output).
 
-## Delete pervious files on each build
+## `package.json` scripts
+
+```json
+"scripts": {
+  "start": "rm -rf _site/ && eleventy --serve",
+  "build": "rm -rf _site/ && eleventy"
+},
+```
+
+### `rm -rf`
 
 To delete the perviously built files each time the build script is started (but not pon each refresh, when watched files change), add the following script to `package.json`:
 
@@ -122,11 +131,9 @@ To delete the perviously built files each time the build script is started (but 
 },
 ```
 
-## Debug mode
+This will slow the build process down, and you might want to use it when building, but not when developing.
 
-Debug mode gives lots of details about the build process. See here for [more](https://www.11ty.dev/docs/debugging/).
-
-## Watch and Serve
+## Watch and Serve, Ignore and Add Targets
 
 For dev server options see [here](https://www.11ty.dev/docs/dev-server/).
 
@@ -154,4 +161,6 @@ module.exports = function (eleventyConfig) {
 
 The the live server and build process grind to a halt try the [`--incremental`](https://www.11ty.dev/docs/usage/incremental/) option, or use the [Vite plugin](https://www.11ty.dev/docs/server-vite/).
 
+## Debug mode
 
+Debug mode gives lots of details about the build process. See here for [more](https://www.11ty.dev/docs/debugging/).
