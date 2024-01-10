@@ -204,7 +204,6 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addCollection('newsOrdered', function (collectionApi) {
     return collectionApi.getFilteredByTags('news').sort(function (a, b) {
-      console.log(a.data.order);
       return b.data.order - a.data.order; // sort by order - descending
     });
   });
