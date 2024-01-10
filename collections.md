@@ -202,11 +202,11 @@ permalink: "up03_06.htm"
 ```js
 module.exports = function (eleventyConfig) {
 
-  eleventyConfig.addCollection('newsOrdered', function (collectionApi) {
-    return collectionApi.getFilteredByTags('news').sort(function (a, b) {
-      return b.data.order - a.data.order; // sort by order - descending
-    });
-  });
+  eleventyConfig.addCollection('newsOrdered', (collectionApi) =>
+    collectionApi.getFilteredByTags('news').sort(
+      (a, b) => b.data.order - a.data.order // sort by order - descending
+    )
+  );
   
 };
 ```
