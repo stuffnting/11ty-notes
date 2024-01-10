@@ -216,9 +216,9 @@ See [here](https://www.11ty.dev/docs/ignores/) for details.
 
 ### Process files without building
 
-The options for ignoring files listed above will ignore the file completley. As a result the files are ingnored by the build process, and excluded from collections.
+The options for ignoring files listed above will ignore the file completley. As a result the files are note built to the output folder, and are excluded from collections.
 
-To process the contents of a template file, without it being built to the output folder (by default `_site`), use:
+To process the contents of a template file, so that it is added to collections, without it being built to the output folder (by default `_site`), use:
 
 ```yaml
 ---
