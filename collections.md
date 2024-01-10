@@ -105,13 +105,23 @@ tags: post
 This will not be available in `collections.all` or `collections.post`.
 ```
 
-## Sorting collections
+## Custom collections and sorting methods
 
-**Default**
+### Default sorting - created date
 
 The default sorting is by the files Created Date. Files have the same Created Date, their full paths are used to sort them. See here for [more](https://www.11ty.dev/docs/collections/#sorting).
 
-**Sort descending**
+### Override the Created Date
+
+This is achieved using `date` in the content's front matter.
+
+```yaml
+---
+date: 2016-01-01
+---
+```
+
+### Sort descending in template files
 
 This can be done with the Nunjucks `reverse` filter ([other templating options](https://www.11ty.dev/docs/collections/#sort-descending)).
 
@@ -123,23 +133,13 @@ This can be done with the Nunjucks `reverse` filter ([other templating options](
 </ul>
 ```
 
-## Override the Created Date
-
-This is achieved using `date` in the content's front matter.
-
-```yaml
----
-date: 2016-01-01
----
-```
-
 Or, set a different file related date (see [here](https://www.11ty.dev/docs/dates/#setting-a-content-date-in-front-matter) for the full list):
 
 ```yaml
 date: Last Modified
 ```
 
-## Custom collections and sorting methods
+### Custom collections and sorting methods
 
 You can create your own sorting filters in the `.eleventy.js` config file.
 
@@ -156,7 +156,7 @@ module.exports = function (eleventyConfig) {
 
 There are lost of examples of filters [here](https://www.11ty.dev/docs/collections/#advanced-custom-filtering-and-sorting), including ignoring `tags` and filtering all content via specified rules, getting content that is listed with defined multiple `tags`, only returning content that has come from MD files, use globs to select files etc.
 
-### Example
+#### Example of a custom collection
 
 This example defines a collection that includes all of the MD files from the `/posts`, and `/more-templates` folders.
 
@@ -183,6 +183,47 @@ module.exports = function (eleventyConfig) {
 <p>{{ post.content | safe }}</p>
 
 {% endfor %}
+```
+
+#### Example of a custom collection with a sort method
+
+***News item template file***
+
+```yaml
+---
+title: Update March 2006
+order: 0
+permalink: "up03_06.htm"
+---
+```
+
+***`.eleventy.js`***
+
+```js
+module.exports = function (eleventyConfig) {
+
+  eleventyConfig.addCollection('newsOrdered', function (collectionApi) {
+    return collectionApi.getFilteredByTags('news').sort(function (a, b) {
+      console.log(a.data.order);
+      return b.data.order - a.data.order; // sort by order - descending
+    });
+  });
+  
+};
+```
+
+***News archive template file***
+
+```hbs
+<ul  class="archive-list">
+
+{% for newsPost in collections.newsOrdered %}
+
+<li><a href="{{newsPost.url}}">{{newsPost.data.title}}</a></li>
+
+{% endfor %}
+
+</ul>
 ```
 
 ## Collection data structure
