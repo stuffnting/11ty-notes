@@ -43,10 +43,12 @@ module.exports = function(eleventyConfig) {
   // Return your Object options:
   return {
     dir: {
-      input: "views",
-      output: "dist"
-    }
-  }
+      input: 'src',
+      output: 'dist',
+    },
+    markdownTemplateEngine: false,
+    htmlTemplateEngine: 'njk',
+  };
 };
 ```
 
