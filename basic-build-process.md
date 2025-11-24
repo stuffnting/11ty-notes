@@ -2,15 +2,15 @@
 
 ## File type nomenclature
 
-***Template***
+**_Template_**
 
 A content file written in a format such as Markdown, HTML, Liquid, Nunjucks, and more, which Eleventy transforms into a page (or pages) in the built site.
 
-***Layout***
+**_Layout_**
 
 A template which wraps around another template, typically to provide the scaffolding markup for content to sit in. These files are not processed unless they are called by another files.
 
-***Partial***
+**_Partial_**
 
 Part of a layout.
 
@@ -47,7 +47,7 @@ Markdown and HTML files are preprocessed by a template engine, before they are t
 
 Files to be included in the build, such as image files and CSS, can be copied to the build folder using [`passThroughCopy`](#passthrough-copy).
 
-11ty with also automatically process the contents of root folders, unless the folder name begins with `_`, or `.`. See the blog example [below](#simple-blog-setup).
+11ty will also automatically process the contents of root folders, unless the folder name begins with `_`, or `.`. See the blog example [below](#simple-blog-setup).
 
 For example:
 
@@ -65,6 +65,18 @@ Or,
 |            | or `subdir/template/index.njk`      |
 | **Output** | `_site/sub-dir/template/index.html` |
 | **Href**   | `/sub-dir/template/`                |
+
+### Multiple files per directory
+
+A file that has the same name as the folder becomes `index.html`, whereas, files with names other than the folder name get their own folders.
+
+For example:
+
+`_src/mo-juice/mo-juice.md` becomes `_site/mo-juice/index.html`
+
+and,
+
+`_src/mo-juice/no-juice-here.md` becomes `_site/mo-juice/no-juice-here/index.html`
 
 ### Build to custom locations: `permalink`
 
@@ -211,7 +223,7 @@ See [here](https://www.11ty.dev/docs/ignores/) for details.
 - `node_modules` is always ignored.
 - The list of files and directories to be ignored are in `eleventyConfig.ignores`. Items can be added and removed from the list in the config file using: `()` and `eleventyConfig.ignores.delete()`.
 
-***Note, the file watcher has an ignore list which is separate to the build process' watch list.***
+**_Note, the file watcher has an ignore list which is separate to the build process' watch list._**
 
 ## Custom build file types
 

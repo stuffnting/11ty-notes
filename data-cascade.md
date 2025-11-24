@@ -32,8 +32,14 @@ layout: my-layout.njk
 
 **_`_includes/my-layout.njk`_**
 
-```hbs
---- title: This is a Very BAD Blog Post author: Zach tags: - JavaScript ---
+```yaml
+---
+title: This is a Very BAD Blog Post
+author: Zach
+tags:
+  - JavaScript
+---
+```
 
 <ul>
   <li>Title = {{title}}</li>
@@ -62,7 +68,7 @@ Note, the `tags` have been concatenated, the `template` has been updated to the 
 
 If data is to be applied to a specific template, or a specific directory of templates only, it can be added as JSON or JS data files. Directory data is also applied to sub-directories.
 
-JSON will look for the following files:
+11ty will look for the following files:
 
 1. Content Template Front Matter Data
 
@@ -348,7 +354,7 @@ module.exports = (eleventyConfig) => {
       return data.permalink;
     };
   });
-}
+};
 ```
 
 ## Environmental variables

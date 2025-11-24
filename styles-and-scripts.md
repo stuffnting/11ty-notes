@@ -1,4 +1,3 @@
-
 # Styles and scripts
 
 ## Linking to styles and scripts
@@ -44,11 +43,8 @@ The files are to be added to a `.njk` file, which needs to be in a location from
 Example, place the following in `/styles/concat-styles.njk``:
 
 ```hbs
----
-permalink: css/styles.css 
---- 
-
-{% include "css/header.css" %} {% include "css/styles.css" %}
+--- permalink: css/styles.css --- {% include "css/header.css" %} {% include
+"css/styles.css" %}
 ```
 
 The combined stylesheet is built to `_site/css/styles.css`.
@@ -110,3 +106,23 @@ This plugin allows for CSS, HTML and JS to be dispersed through a file, and then
 For example, specific CSS for the content in a MD file, or, things to add to the HTML head that are page specific.
 
 See [here](https://github.com/11ty/eleventy-plugin-bundle/) for more.
+
+## SCSS
+
+To add SCSS processing [see here](https://www.11ty.dev/docs/languages/sass/).
+
+It is possible to specify the output folder for the constructed style sheets by adding a YAML header to the SCSS files. This will be flagged as an error in the SCSS files, but it works.
+
+```YAML
+---
+permalink: css/style.css
+---
+
+$primary: teal;
+$gallery-grid-gap: 25px;
+$default-thumb-size: 290px;
+
+html * {
+  box-sizing: border-box;
+}
+```

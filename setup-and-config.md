@@ -26,7 +26,7 @@ By default the output files are built to `/_site`.
 
 The default config file, `defaultConfig.js`, is on [GitHub](https://github.com/11ty/eleventy/blob/master/src/defaultConfig.js).
 
-For the document action see [here](https://www.11ty.dev/docs/config/).
+For the documentation see [here](https://www.11ty.dev/docs/config/).
 
 Many of these options can be applied at the command line, as well as in the config file.
 
@@ -38,9 +38,9 @@ By default 11ty looks for the following files, the first one found is used:
 
 The options include:
 
-**[`dir.input`](https://www.11ty.dev/docs/config/#input-directory)** changes the top level input directory, file, or glob. Note, if an input folder is set, the default it to have `_includes` and `_data` contained within it.
+**[`dir.input`](https://www.11ty.dev/docs/config/#input-directory)** changes the top level input directory, file, or glob. The default is the root folder of the project. Note, if an input folder is set, the default it to have `_includes` and `_data` contained within it.
 
-**[`dir.includes`](https://www.11ty.dev/docs/config/#directory-for-includes)** changes the folder where 11ty looks for template files. The default is `_includes`. Files in this folder are not processed as template file.
+**[`dir.includes`](https://www.11ty.dev/docs/config/#directory-for-includes)** changes the folder where 11ty looks for layout files. The default is `_includes`. Files in this folder are not processed as template file.
 
 **[`dir.layouts`](<https://www.11ty.dev/docs/config/#directory-for-layouts-(optional)>)** it is possible to set a folder for layout, that is separate from the includes folder. Like the includes folder, file in this folder are not processed as template files.
 
@@ -56,7 +56,7 @@ The options include:
 
 **[`eleventyConfig.setQuietMode(true)`](https://www.11ty.dev/docs/config/#enable-quiet-mode-to-reduce-console-noise)** enable quite mode, which limits the amount of information logged during the build process.
 
-**[`pathPrefix`](https://www.11ty.dev/docs/config/#deploy-to-a-subdirectory-with-a-path-prefix)** if the site is in a subfolder on the server, this options will add the specified path-prefix to absolute URLs.
+**[`pathPrefix`](https://www.11ty.dev/docs/config/#deploy-to-a-subdirectory-with-a-path-prefix)** if the site is in a subfolder on the server, this options will add the specified path-prefix to absolute URLs. Used in conjunction with the [htmBasePlugin](https://www.11ty.dev/docs/plugins/html-base/).
 
 **[`htmlOutputSuffix`](https://www.11ty.dev/docs/config/#change-exception-case-suffix-for-html-files)** if the input folder is the same as the output folder, a suffix is added to the end of processed HTML files to prevent the template files being overwritten. The default is `-o`.
 
@@ -70,7 +70,7 @@ The options include:
 
 **[`eleventyConfig.dataFilterSelectors`](https://www.11ty.dev/docs/config/#data-filter-selectors)** include data from the data cascade in the output.
 
-**[`/** @param {import("@11ty/eleventy").UserConfig} eleventyConfig */`](https://www.11ty.dev/docs/config/#type-definitions)** adding this at the top of the config file will add extra autocomplete features to some IDEs.
+**[`/** @param {import("@11ty/eleventy").UserConfig} eleventyConfig \*/`](https://www.11ty.dev/docs/config/#type-definitions)\*\* adding this at the top of the config file will add extra autocomplete features to some IDEs.
 
 ## Command line options
 
@@ -139,5 +139,3 @@ module.exports = function (eleventyConfig) {
 ```
 
 The the live server and build process grind to a halt try the [`--incremental`](https://www.11ty.dev/docs/usage/incremental/) option, or use the [Vite plugin](https://www.11ty.dev/docs/server-vite/).
-
-
