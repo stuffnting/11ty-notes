@@ -2,6 +2,32 @@
 
 See [here](https://www.11ty.dev/docs/data-cascade/) and [here](https://benmyers.dev/blog/eleventy-data-cascade/).
 
+## What data is available to a template/layout file
+
+The data cascade provides data for each page being built.
+
+- data from **global template files** is available to all pages;
+
+- data from a **directory data file** is available to templates within that directory;
+
+- data from a **template data file** is available to the that template only;
+
+- data from **front matter** is also only available to that template only.
+
+Within a layout file that deals with collections, the data cascade provides data for each item within the collection.
+
+Note, in the following example, data from the data cascade is in `gallery.data` for each gallery item. Although, global data can be accessed anywhere in the layout file as `myGlobal` and not `data.myGlobal`.
+
+```
+<ul class="index-page__list">
+{%- for gallery in collections.orderedGalleries -%}
+  <li class="index-page__list-item"><a href="{{ gallery.url }}/index.html">{{ gallery.data.title }}</a></li>
+{%- endfor -%}
+</ul>
+
+<p>{{ myGlobal }}</p>
+```
+
 ## Sources of data and their priority
 
 When the data is merged in the Eleventy Data Cascade, the order of priority for sources of data is (from highest priority to lowest, see [here](https://www.11ty.dev/docs/data-cascade/)):
@@ -13,6 +39,8 @@ When the data is merged in the Eleventy Data Cascade, the order of priority for 
 5. Front Matter Data in Layouts
 6. Configuration API Global Data
 7. Global Data Files
+
+Also, take note of the build process. See (Order of operation)[https://www.11ty.dev/docs/advanced-order/] in the official docs.
 
 As a rule, data that is defined closer to your content will be evaluated later in the data cascade, and will have a higher precedence.
 
@@ -232,19 +260,32 @@ module.exports = function (eleventyConfig) {
 
 ## Computed data
 
-Computed data is stored in the `eleventyComputer` property.
+Computed data is stored in the `eleventyComputed` property.
 
 You can put your `eleventyComputed` values anywhere in the Data Cascade: Front Matter, any Data Files (you could even make an `eleventyComputed.js` global data file if you wanted to set this for your entire site). The values in `eleventyComputed` can be used to override values set elsewhere in the data cascade.
 
-If the computer data is derived from JS functions, it must be added by either JS front matter, or a JS data file (), since YAML and JSON don't support JS functions.
+**NOTE: If you are making computed data globally accessibly using a global data file within the `_data` directory, the file must be named `_data/eleventyComputed.js`.**
 
-Computed data is added to the cascade just before the templates are rendered, and can not be used to modify the [special data properties](https://www.11ty.dev/docs/data-configuration/), such as, `layout`, `pagination`, `tags` etc. However, computed data can be use, or set `permalink`.
+If the computed data is derived from JS functions, it must be added by either JS front matter, or a JS data file, since YAML and JSON don't support JS functions.
 
-**In a JS file**
+Computed data is added to the cascade just before the templates are rendered, and can not be used to modify the [special data properties](https://www.11ty.dev/docs/data-configuration/), such as:
+
+- `layout`, 
+- `pagination`, 
+- `tags`,
+- `date`,
+- `templateEngineOverride`,
+- `eleventyExcludeFromCollections`,
+- `eleventyDataSchema`,
+- `eleventyNavigation`.
+
+However, computed data *can* be use, or set `permalink`.
+
+### In a JS file
 
 Any arbitrary bit of JS can be used to supply an `eleventyComputed` property. Where functions are used, they will be passed a `data` attribute, containing the template's data that has already been gathered from other sources (global data, font matter, directory data files etc.), although not the [special data values](https://www.11ty.dev/docs/data-configuration/), apart from `permalink`.
 
-It sometimes helps to declare data from elsewhere in the data cascade as a dependency within JS functions. FOr more about this, [see here](https://www.11ty.dev/docs/data-computed/#declaring-your-dependencies).
+It sometimes helps to declare data from elsewhere in the data cascade as a dependency within JS functions. For more about this, [see here](https://www.11ty.dev/docs/data-computed/#declaring-your-dependencies).
 
 ```js
 module.exports = {
@@ -262,7 +303,31 @@ module.exports = {
 };
 ```
 
-**In YAML**
+When using a global data file the file must be named `_data/eleventyComputed.js`.
+
+This example accesses other global data in the computed data.
+
+In `_data/pantTypes.json`
+
+```json
+["Whity Tighty", "Boxers", "Long Johns"]
+```
+
+In `_data/eleventyComputed.js`
+
+```js
+export default {
+  myPants: (data) => {
+    return data.galleryOrder;
+  },
+};
+```
+
+`myPants` can now be used in a template or layout file.
+
+### In YAML
+
+**Don't forget to add quotes around the data, just like with permalinks.**
 
 This code is for a Nunjucks template.
 
@@ -274,6 +339,20 @@ eleventyComputed:
   eleventyNavigation:
     key: "{{ title }}"
     parent: "{{ parent }}"
+---
+```
+
+Another example is to use `pagination` data:
+
+```YAML
+---
+layout: template.njk
+permalink: "{{ page.filePathStem }}/{{ photo | slugify  }}.html"
+eleventyComputed: 
+  first: "{{pagination.firstPageHref}}"
+  last: "{{pagination.lastPageHref}}"
+  previous: "{{pagination.previousPageHref}}"
+  next: "{{pagination.lastPageHref}}"
 ---
 ```
 

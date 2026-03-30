@@ -2,13 +2,60 @@
 
 See [here](https://rphunt.github.io/eleventy-walkthrough/pagination.html).
 
+**Note: Data that are to be paginated, including collections, should be a flat array.**
+
 Pages can be created from data stored within JSON files, which are kept in the `_data` folder. Pages can also be made from data with a template's front matter.
 
 The first few examples deal with making one page per data item. For having more than one data item per page, see [Multiple data items per page](#multiple-data-items-per-page).
 
+## Pagination data and `eleventyComputed`
+
+Pagination data can not be set using `eleventyComputed`. (See here)[https://www.11ty.dev/docs/data-computed/].
+
+If you want to centralise pagination data that is used by many templates, try including it in a layout file further downstream.
+
+For example, with the structure:
+
+```
+├── _src
+    ├── includes/
+    │   ├── slides.njk
+    │   └── layout.njk
+    ├── thorncombe
+    │   ├── thorncombe.njk
+    │   └── thorncombe.11tydata.json -> contains `photos` data object
+    ├── antwerp
+        ├── antwerp.njk
+        └── antwerp.11tydata.json -> contains `photos` data object   
+    
+```
+
+In the `.njk` template files (thorncombe.njk, and antwerp.njk) all you need is:
+
+```YAML
+---
+layout: slides.njk
+title: A very nice photo
+---
+```
+
+Then, in the layout file, `_includes/slides.njk:
+
+```YAML
+layout: layout.njk
+permalink: "{{ page.filePathStem }}/{{ photo }}.html"
+pagination: 
+  data: photos 
+  size: 1 
+  alias: photo 
+eleventyComputed: 
+  previous: "{{ pagination.page.previous or pagination.page.last }}"
+  next: "{{ pagination.page.next or pagination.page.first }}"
+```
+
 ## Automatic permalinks—JSON
 
-**_`_data/possum-pages.json`:_**
+**_`_data/possums.json`:_**
 
 ```json
 [
@@ -36,7 +83,14 @@ The first few examples deal with making one page per data item. For having more 
 The page template below the front matter is called for each new page, in this case that means once for each data item.
 
 ```hbs
---- layout: mylayout.nks pagination: data: possums size: 1 alias: possum ---
+--- 
+layout: mylayout.nks 
+pagination: 
+  data: possums 
+  size: 1 
+  alias: possum 
+permalink: "possums/{{ possum.name | slugify }}/"
+---
 
 {{possum.name}}
 is
@@ -48,11 +102,19 @@ years old
 - `size`—how many items to put on each page created. To create a page per item, use 1. For details about having more than one item on a page see [below](#multiple-data-items-per-page).
 - `alias`—a variable name used to refer to the data item currently being turned into a page. This is an alias for `pagination.items[0]` etc.
 
-Note, the above code can be written with a conventional Nunjucks `for` loop. in Which case, the `alias` is not needed. Despite there being only one data item to display per page, a loop is used, which is similar to the way WorPress displays a single post/page.
+Note, the above code can be written with a conventional Nunjucks `for` loop. In Which case, the `alias` is not needed. Despite there being only one data item to display per page, a loop is used, which is similar to the way WordPress displays a single post/page.
 
 ```hbs
---- layout: mylayout.nks pagination: data: possums size: 1 alias: possum --- {%
-for possum in pagination.items %}
+--- 
+layout: mylayout.nks 
+pagination: 
+  data: possums 
+  size: 1 
+  alias: possum 
+permalink: "possums/{{ possum.name | slugify }}/"
+--- 
+
+{% for possum in pagination.items %}
 {{possum.name}}
 is
 {{possum.age}}
@@ -61,7 +123,7 @@ years old. {% endfor %}
 
 **Pages created**
 
-The above code produces a folder `_site/possum-pages`, where the file `_site/possum-pages/index.html` contains the first data item ("Fluffy").
+The above code produces a folder `_site/possums/`, where the file `_site/possums/index.html` contains the first data item ("Fluffy").
 
 `_site/possum-pages` also contains three sub-folders, numbered 1 to 3, each of which contains an `index.html` file. These files contain the 2nd, 3rd and 4th data items, respectively.
 
@@ -72,9 +134,24 @@ The data can be supplied from the front matter.
 **_`my-people.njk`_**
 
 ```hbs
---- pagination: data: testdata size: 1 testdata: - item1: name: Bob age: 22
--item2: name: Mike age: 33 - item3: name: Dave age: 44 - item4: name: Bill age:
-55 --- {% for person in pagination.items %}
+--- 
+pagination: 
+data: testdata 
+size: 1 
+testdata: 
+  - item1: 
+    name: Bob 
+    age: 22
+  -item2: 
+    name: Mike 
+    age: 33 
+  - item3: 
+    name: Dave 
+    age: 44 
+  - item4: 
+    name: Bill 
+    age: 55 
+--- {% for person in pagination.items %}
 <li>{{person.name}} is {{person.age}} old.</li>
 {% endfor %}
 ```
@@ -157,7 +234,11 @@ This time `_site/possum-pages` does not contain an `index.html` file, and there 
 **_`/country-food.njk`_**
 
 ```hbs
---- pagination: data: multi-data-items size: 2 ---
+--- 
+pagination: 
+  data: multi-data-items 
+  size: 2 
+---
 
 <ol>
   {% for country in pagination.items %}

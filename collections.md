@@ -3,6 +3,8 @@
 
 Collections are pieces of content that are grouped together using `tags` in their front matter. A piece of content can be in multiple collections.
 
+**Note: Collections that are to be paginated should be a flat array.** 
+
 ## Adding tags
 
 **A single tag**
@@ -88,6 +90,10 @@ The `tags` is used to specify what 11ty calls a "collection", which is use in th
 
 {% endfor %}
 ```
+
+## A note on mutation when making new collections
+
+See WARNING-mutation.md.
 
 ## The `all` collection
 
@@ -250,3 +256,32 @@ Backwards compatibility:
 
 - Top level properties for ` inputPath`,  `fileSlug`, `outputPath`, `url`, `date`are still available, though use of`page.\*` (Added in v2.0.0) for these is encouraged moving forward.
 - `content` (Added in v2.0.0) is aliased to the previous property `templateContent`.
+
+## Collection data structure &amp; nested data
+
+Eleventy's `pagination` only accepts top-level keys from data, so you cannot directly reference `collections.categories.nestedArray` in the `data` field. 
+
+For example, having `date: collections.categories.allItems` results in an error saying that the data can't be found.
+
+### Workaround : use `before`
+
+Using JS front matter or a JS template, the collection can be entered as the pagination data, and then the `before` callback can be used to specify the nested array of data.
+
+```
+---js
+{
+  layout: "slide",
+  tags: ["category-slide"],
+  pagination: {
+    data: "collections.categories",
+    size: 1,
+    alias: "file",
+    addAllPagesToCollections: true,
+    before: function(paginationData, fullData){
+        return paginationData.allItems;
+    }
+  },
+  permalink: "{{ file.slideCat | slugify }}/slides/{{ file.filename }}.html"
+}
+---
+```

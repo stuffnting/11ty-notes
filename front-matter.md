@@ -67,6 +67,34 @@ This can incorporate JS functions to be used in the template/layout.
 <p>Published on {{ currentDate() }}</p>
 ```
 
+## Front matter in JS templates
+
+Use the `data` property for front matter.
+
+```js
+export default {
+  data: {
+    layout: 'gallery',
+    permalink: function ({ cat }) {
+      return `${this.slugify(cat.name)}/index.html`;
+    },
+    tags: ['category'],
+    pagination: {
+      data: 'categories',
+      size: 1,
+      alias: 'cat',
+      addAllPagesToCollections: true,
+    },
+    eleventyComputed: {
+      title: ({ cat }) => cat.label,
+    },
+  },
+};
+```
+Note, in the above example, the function that returns the `permalink` structure needs to be a regular function because a filter is applied using `this`. The function that returns `title` does not use `this`, and can therefore be an arrow function.
+
+Both functions are passed the `data` property, which in both cases has been destructured.
+
 ## Custom front matter formats
 
 It is possible use front matter in other forms, which are supported by grey-matter, but not 11ty by default.

@@ -43,7 +43,7 @@ By default the site is built to `/_site`, and 11ty will start to build from `/in
 
 The full list of recognised template types that will be processed is: `html`, `liquid`, `ejs`, `md`, `hbs`, `mustache`, `haml`, `pug`,` njk`, and `11ty.js`.
 
-Markdown and HTML files are preprocessed by a template engine, before they are treated as MD or HTML. By default the template engine is Liquid. This can be changed globally, in the [config file](#config-files-and-options), or on a per-template basis using `templateEngineOverride` in the front matter.
+Markdown and HTML files are preprocessed by a template engine before they are treated as MD or HTML. By default the template engine is Liquid. This can be changed globally, in the [config file](#config-files-and-options), or on a per-template basis using `templateEngineOverride` in the front matter.
 
 Files to be included in the build, such as image files and CSS, can be copied to the build folder using [`passThroughCopy`](#passthrough-copy).
 
@@ -77,6 +77,10 @@ For example:
 and,
 
 `_src/mo-juice/no-juice-here.md` becomes `_site/mo-juice/no-juice-here/index.html`
+
+However, if you want to write multiple files to a folder, rather than each file having its own folder, you can add a file extension to the permalink.
+
+`permalink: "{{ page.filePathStem }}/{{ photo | slugify  }}.html"`
 
 ### Build to custom locations: `permalink`
 

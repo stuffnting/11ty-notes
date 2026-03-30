@@ -1,5 +1,7 @@
 # Pagination and collections
 
+**Note: Collections that are to be paginated should be a flat array.**
+
 ## Creating pages from data and adding them to a collection
 
 By default, only the first page created via pagination will be added to a collection specified in the front matter.
