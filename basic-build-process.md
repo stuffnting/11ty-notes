@@ -107,6 +107,15 @@ permalink: "sub-dir/{{ title | slugify }}/index.html"
 ---
 ```
 
+and:
+
+```yaml
+---
+title: This is a New Path
+permalink: permalink: "/blog/{% if title %}{{ title | slugify }}{% else %}{{path.fileSlug}}{% endif %}/"
+---
+```
+
 Writes to `_site/sub-dir/this-is-a-new-path/index.html`.
 
 Dates can also be added:
@@ -153,14 +162,6 @@ templateEngineOverride: njk,md
 ```
 
 Setting `templateEngineOverride` to `false` on any template file will prevent it from being processed, and the file will be copied to the output folder.
-
-To process the contents of a template file, without it being written to the build folder (by default `_site`), use:
-
-```yaml
----
-permalink: false
----
-```
 
 ## Build from JS files
 
@@ -228,6 +229,29 @@ See [here](https://www.11ty.dev/docs/ignores/) for details.
 - The list of files and directories to be ignored are in `eleventyConfig.ignores`. Items can be added and removed from the list in the config file using: `()` and `eleventyConfig.ignores.delete()`.
 
 **_Note, the file watcher has an ignore list which is separate to the build process' watch list._**
+
+### Process files without building
+
+The options for ignoring files listed above will ignore the file completley. As a result the files are note built to the output folder, and are excluded from collections.
+
+To process the contents of a template file, so that it is added to collections, without it being built to the output folder (by default `_site`), use:
+
+```yaml
+---
+permalink: false
+---
+```
+
+### Build the file but exclude from collections
+
+To build the file to the output folder, but exclude from all collections (including `collections.all`), use:
+
+```yaml
+---
+eleventyExcludeFromCollections: true
+tags: post
+---
+```
 
 ## Custom build file types
 

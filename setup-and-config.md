@@ -30,13 +30,29 @@ For the documentation see [here](https://www.11ty.dev/docs/config/).
 
 Many of these options can be applied at the command line, as well as in the config file.
 
-By default 11ty looks for the following files, the first one found is used:
+By default 11ty looks for the following config files, the first one found is used:
 
 - `.eleventy.js`
 - `eleventy.config.js`
 - `eleventy.config.cjs`
 
-The options include:
+The options are returned as an object by the config file:
+
+```js
+module.exports = function(eleventyConfig) {
+  // Return your Object options:
+  return {
+    dir: {
+      input: 'src',
+      output: 'dist',
+    },
+    markdownTemplateEngine: false,
+    htmlTemplateEngine: 'njk',
+  };
+};
+```
+
+### The options
 
 **[`dir.input`](https://www.11ty.dev/docs/config/#input-directory)** changes the top level input directory, file, or glob. The default is the root folder of the project. Note, if an input folder is set, the default it to have `_includes` and `_data` contained within it.
 
@@ -98,7 +114,16 @@ There several options can can be used when building eleventy, including:
 
 **`--input`** and **`--output`** use the same folder for input and output—use with care. See [here](https://www.11ty.dev/docs/usage/#using-the-same-input-and-output).
 
-## Delete pervious files on each build
+## `package.json` scripts
+
+```json
+"scripts": {
+  "start": "rm -rf _site/ && eleventy --serve",
+  "build": "rm -rf _site/ && eleventy"
+},
+```
+
+### `rm -rf`
 
 To delete the perviously built files each time the build script is started (but not pon each refresh, when watched files change), add the following script to `package.json`:
 
@@ -108,11 +133,9 @@ To delete the perviously built files each time the build script is started (but 
 },
 ```
 
-## Debug mode
+This will slow the build process down, and you might want to use it when building, but not when developing.
 
-Debug mode gives lots of details about the build process. See here for [more](https://www.11ty.dev/docs/debugging/).
-
-## Watch and Serve
+## Watch and Serve, Ignore and Add Targets
 
 For dev server options see [here](https://www.11ty.dev/docs/dev-server/).
 
@@ -139,3 +162,10 @@ module.exports = function (eleventyConfig) {
 ```
 
 The the live server and build process grind to a halt try the [`--incremental`](https://www.11ty.dev/docs/usage/incremental/) option, or use the [Vite plugin](https://www.11ty.dev/docs/server-vite/).
+<<<<<<< HEAD:setup-and-config.md
+=======
+
+## Debug mode
+
+Debug mode gives lots of details about the build process. See here for [more](https://www.11ty.dev/docs/debugging/).
+>>>>>>> 180611d0ef94804d402e08c700b248e5156820e9:setup.md

@@ -118,7 +118,9 @@ module.exports = function (eleventyConfig) {
 
 ***Nunjucks template file***
 
+```
 {% image "https://images.unsplash.com/photo-1608178398319-48f814d0750c", "photo of my tabby cat", "(min-width: 30em) 50vw, 100vw" %}
+```
 
 ```html
 <picture>
