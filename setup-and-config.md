@@ -39,15 +39,15 @@ By default 11ty looks for the following config files, the first one found is use
 The options are returned as an object by the config file:
 
 ```js
-module.exports = function(eleventyConfig) {
+module.exports = function (eleventyConfig) {
   // Return your Object options:
   return {
     dir: {
-      input: 'src',
-      output: 'dist',
+      input: "src",
+      output: "dist",
     },
     markdownTemplateEngine: false,
-    htmlTemplateEngine: 'njk',
+    htmlTemplateEngine: "njk",
   };
 };
 ```
@@ -162,10 +162,3 @@ module.exports = function (eleventyConfig) {
 ```
 
 The the live server and build process grind to a halt try the [`--incremental`](https://www.11ty.dev/docs/usage/incremental/) option, or use the [Vite plugin](https://www.11ty.dev/docs/server-vite/).
-<<<<<<< HEAD:setup-and-config.md
-=======
-
-## Debug mode
-
-Debug mode gives lots of details about the build process. See here for [more](https://www.11ty.dev/docs/debugging/).
->>>>>>> 180611d0ef94804d402e08c700b248e5156820e9:setup.md

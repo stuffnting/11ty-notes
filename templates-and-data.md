@@ -1,5 +1,79 @@
 # Templates and data
 
+## Logging data
+
+There is no single object that can be used to log all of the data available to a nunjucks layout file. A workaround is to add a JS layout file to the chain, which can use a single data object.
+
+**Template file** 
+```hbs
+---
+layout: data-logger.11ty.js
+---
+```
+**data logger file: _includes/data-logger.11ty.js**
+```js
+class DataLogger {
+  data() {
+    return {
+      layout: "template.njk",
+      eleventyComputed: {
+        myECD: (itemData) => {
+          const { collections, eleventy, pagination, pkg, ...cleanData } =
+            itemData;
+          console.log("--- Template Data Start ---");
+          console.log(cleanData);
+          console.log("--- Template Data End ---");
+
+          return {};
+        },
+      },
+    };
+  }
+
+  render(itemData) {
+    /*     const { collections, eleventy, pagination, pkg, ...cleanData } = itemData;
+
+    console.log("--- Template Data Start ---");
+    console.log(cleanData.item.data.tags);
+    console.log("--- Template Data End ---"); */
+    return "";
+  }
+}
+
+export default DataLogger;
+```
+Notes:
+- The item data can be logged from the `render()` or `data()` methods.
+- The destructured items are removed from the data, and `cleanData` contains the remaining data to be logged.
+- `collections` is removed because it can cause circular references.
+- When paginating data from a collection made using tagged content, all of the items original data might not be present when logged. For example, `itemData.collectionItem.data.tags` might be missing. You can log the keys of this 'hidden data' using `Object.keys(itemData.item.data)`, and force 11ty to log the actual hidden data values by logging then directly, e.g. `itemData.item.data.keys`.
+
+The above data logger with a hidden key logger:
+
+```js
+data() {
+  return {
+    layout: "template.njk",
+    eleventyComputed: {
+      myECD: (itemData) => {
+        const { collections, eleventy, pagination, pkg, ...cleanData } = itemData;
+
+        const keys = cleanData.item?.data
+          ? Object.keys(cleanData.item.data)
+          : "";
+
+        console.log("--- Template Data Start ---");
+        console.log(keys);
+        console.log(cleanData);
+        console.log("--- Template Data End ---");
+
+        return {};
+      },
+    },
+  };
+}
+```
+
 ## Special front matter data keys
 
 There are a few special data keys you can assign in your data to control how templates behave. These can live anywhere in the Data Cascade, such as front matter, and include:

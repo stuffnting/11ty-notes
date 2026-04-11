@@ -1,9 +1,8 @@
-
 # Collections
 
 Collections are pieces of content that are grouped together using `tags` in their front matter. A piece of content can be in multiple collections.
 
-**Note: Collections that are to be paginated should be a flat array.** 
+**Note: Collections that are to be paginated should be a flat array.**
 
 ## Adding tags
 
@@ -18,7 +17,7 @@ title: Word to the wise: a blog post
 
 **Multiple tags as a string**
 
-```yaml
+````yaml
 ---
 tags: cats and dogs
 ---
@@ -29,7 +28,7 @@ tags: cats and dogs
 ---
 tags: ["cat", "dog"]
 ---
-```
+````
 
 **Multiple tags on multiple lines**
 
@@ -166,7 +165,7 @@ There are lost of examples of filters [here](https://www.11ty.dev/docs/collectio
 
 This example defines a collection that includes all of the MD files from the `/posts`, and `/more-templates` folders.
 
-***`.eleventy.js`***
+**_`.eleventy.js`_**
 
 ```js
 module.exports = function (eleventyConfig) {
@@ -179,7 +178,7 @@ module.exports = function (eleventyConfig) {
 };
 ```
 
-***Template file***
+**_Template file_**
 
 ```hbs
 {% for post in collections.moreStuff %}
@@ -193,7 +192,7 @@ module.exports = function (eleventyConfig) {
 
 #### Example of a custom collection with a sort method
 
-***News item template file***
+**_News item template file_**
 
 ```yaml
 ---
@@ -203,30 +202,28 @@ permalink: "up03_06.htm"
 ---
 ```
 
-***`.eleventy.js`***
+**_`.eleventy.js`_**
 
 ```js
 module.exports = function (eleventyConfig) {
-
-  eleventyConfig.addCollection('newsOrdered', (collectionApi) =>
-    collectionApi.getFilteredByTags('news').sort(
-      (a, b) => b.data.order - a.data.order // sort by order - descending
-    )
+  eleventyConfig.addCollection("newsOrdered", (collectionApi) =>
+    collectionApi.getFilteredByTags("news").sort(
+      (a, b) => b.data.order - a.data.order, // sort by order - descending
+    ),
   );
-  
 };
 ```
 
-***News archive template file***
+**_News archive template file_**
 
 ```hbs
-<ul  class="archive-list">
+<ul class="archive-list">
 
-{% for newsPost in collections.newsOrdered %}
+  {% for newsPost in collections.newsOrdered %}
 
-<li><a href="{{newsPost.url}}">{{newsPost.data.title}}</a></li>
+  <li><a href="{{newsPost.url}}">{{newsPost.data.title}}</a></li>
 
-{% endfor %}
+  {% endfor %}
 
 </ul>
 ```
@@ -286,21 +283,58 @@ templateContent: [Getter/Setter],
 content: [Getter]
 ```
 
-***Notes***
+**_Notes_**
 
 - `page`: everything in Eleventy’s supplied `page` variable for this template (including `inputPath`, `url`, `date`, and `others`). **Use these values n preference to the top-level values.** (Added in v2.0.0.)
-- `data`: all `data` for this piece of content (includes any `data` inherited from layouts, template specific, layout specific, and global data). Note, the `data` keys are available in collection templates as variables, e.g. {{ `date` }}, {{ `title` }} etc., but when creating archive pages via `pagination`, they are accessible through `item.data.title` etc. (where `item` is the iteration variable)
+- `data`: all `data` for this piece of content (includes any `data` inherited from layouts, template specific, layout specific, and global data). Note, the `data` keys are available in collection templates as variables, e.g. {{ `date` }}, {{ `title` }} etc., but when creating archive pages via `pagination`, they are accessible through `item.data.title` etc. (where `item` is the iteration variable). If logging the `data` object from a template file, some keys may be missing. For example, to see the `tags`, log `item.data.tags` directly.
 - `content`: the rendered `content` of this template. This does not include layout wrappers. (Added in v2.0.0)
 
 Backwards compatibility:
 
-- Top level properties for ` inputPath`,  `fileSlug`, `outputPath`, `url`, `date`are still available, though use of`page.\*` (Added in v2.0.0) for these is encouraged moving forward.
+- Top level properties for ` inputPath`, `fileSlug`, `outputPath`, `url`, `date`are still available, though use of`page.\*` (Added in v2.0.0) for these is encouraged moving forward.
 - `content` (Added in v2.0.0) is aliased to the previous property `templateContent`.
-<<<<<<< HEAD
+
+## Collections and front matter
+
+When you make a collection, the front matter from the original data items is kept and is accessible via `item.data.frontMatterItem`.
+
+When the collection is paginated by a template, new front matter can be added that belongs to the new data item.
+
+For example, if the original data item has tags added by the template file, they are available in layout files.
+
+```yaml
+---
+layout: my-template.njk
+tags: original tag
+---
+```
+Then in `my-template.njk`:
+
+```hbs
+{{ tags | log }}
+```
+The we can make a `myCollection` using `getFilteredByTag("original tag")`, and when we paginate it, we can add more tags.
+
+```yaml
+---
+layoutL my-template.njk
+tags: new tag
+paginate: 
+  data: collections.myCollection
+  size: 1
+  alias: item
+---
+```
+Then in `my-template.njk`, both sets of `tags` are available.
+
+```hbs
+{{ tags | log }} -> 'new tag'
+{{ item.data.tags | log }} -> 'original tag'
+```
 
 ## Collection data structure &amp; nested data
 
-Eleventy's `pagination` only accepts top-level keys from data, so you cannot directly reference `collections.categories.nestedArray` in the `data` field. 
+Eleventy's `pagination` only accepts top-level keys from data, so you cannot directly reference `collections.categories.nestedArray` in the `data` field.
 
 For example, having `date: collections.categories.allItems` results in an error saying that the data can't be found.
 
@@ -326,5 +360,3 @@ Using JS front matter or a JS template, the collection can be entered as the pag
 }
 ---
 ```
-=======
->>>>>>> 180611d0ef94804d402e08c700b248e5156820e9
