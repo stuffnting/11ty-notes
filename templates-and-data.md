@@ -16,26 +16,16 @@ class DataLogger {
   data() {
     return {
       layout: "template.njk",
-      eleventyComputed: {
-        myECD: (itemData) => {
-          const { collections, eleventy, pagination, pkg, ...cleanData } =
-            itemData;
-          console.log("--- Template Data Start ---");
-          console.log(cleanData);
-          console.log("--- Template Data End ---");
-
-          return {};
-        },
-      },
     };
   }
 
   render(itemData) {
-    /*     const { collections, eleventy, pagination, pkg, ...cleanData } = itemData;
+    // Clean the data. Remove collections to avoid circular references.
+    const { collections, eleventy, pagination, pkg, ...cleanData } = itemData;
 
     console.log("--- Template Data Start ---");
     console.log(cleanData.item.data.tags);
-    console.log("--- Template Data End ---"); */
+    console.log("--- Template Data End ---");
     return "";
   }
 }
@@ -46,33 +36,93 @@ Notes:
 - The item data can be logged from the `render()` or `data()` methods.
 - The destructured items are removed from the data, and `cleanData` contains the remaining data to be logged.
 - `collections` is removed because it can cause circular references.
-- When paginating data from a collection made using tagged content, all of the items original data might not be present when logged. For example, `itemData.collectionItem.data.tags` might be missing. You can log the keys of this 'hidden data' using `Object.keys(itemData.item.data)`, and force 11ty to log the actual hidden data values by logging then directly, e.g. `itemData.item.data.keys`.
 
-The above data logger with a hidden key logger:
+### Logging data from collections made from tagged content
+
+When paginating data from a collection made using tagged content, all of the collection items' original data might not be present when logged. For example, `itemData.collectionItem.data.tags` might be missing. 
+
+You can see all of the data properties by making 11ty wait until the latest possible moment before logging the data. To do this you must pass the data object to the last layout file, which will render the content.
+
+**data logger file: _includes/data-logger.11ty.js**
 
 ```js
-data() {
-  return {
-    layout: "template.njk",
-    eleventyComputed: {
-      myECD: (itemData) => {
-        const { collections, eleventy, pagination, pkg, ...cleanData } = itemData;
+class DataLogger {
+  data() {
+    return {
+      layout: "template.njk",
+    };
+  }
 
-        const keys = cleanData.item?.data
-          ? Object.keys(cleanData.item.data)
-          : "";
+  async render(data) {
+    // Extract the original collection item data
+    const { item, ...otherData } = data;
 
-        console.log("--- Template Data Start ---");
-        console.log(keys);
-        console.log(cleanData);
-        console.log("--- Template Data End ---");
+    // Extract the data from the original collection item
+    const { data: itemData, ...otherItemData } = item;
 
-        return {};
-      },
-    },
-  };
+    // Clean the original collection item data. Remove collections to avoid circular references.
+    const { collections, pagination, eleventy, pkg, ...cleanItemData } =
+      itemData;
+
+    // Return the cleaned data as the template content.
+    return cleanItemData;
+  }
 }
+
+export default DataLogger;
 ```
+
+**_includes/template.njk**
+
+```hbs
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  {{ content | log }}
+</body>
+</html>
+```
+
+You can also force the data logged in JS file to show all of the hidden keys using `Object.keys(itemData.item.data)`, and force 11ty to log the actual hidden data values by logging then directly, e.g. `itemData.item.data.keys`.
+
+### Avoiding circular references when logging
+
+In the examples above the data was cleaned of circular references by removing the `collections` property.
+
+Another safe way to log the data is to use the Node `inspect` function.
+
+```js
+import { inspect } from "node:util";
+
+class DataLogger {
+  data() {
+    return {
+      layout: "template.njk",
+    };
+  }
+
+  render(data) {
+    // Inspect the data from a collection item without cleaning ot of the collection property
+    const output = inspect(data.item.data, {
+      depth: 3,
+      colors: true,
+      compact: false,
+    });
+
+    console.log(output);
+
+    return data.content;
+  }
+}
+
+export default DataLogger;
+```
+Note, that doing this in a JS layout file, as above, will not show the hidden data properties because it forces the data into a sting too early in the build process.
 
 ## Special front matter data keys
 
